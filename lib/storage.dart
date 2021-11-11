@@ -11,7 +11,7 @@ class CookieHelper {
     if (!storage.containsKey("json")) {
       return "";
     }
-    return window.localStorage["json"];
+    return window.localStorage["json"]!;
   }
 
   void saveJsonString(String jsonString) {
@@ -26,7 +26,7 @@ class CookieHelper {
     if (!window.localStorage.containsKey(_entityKey)) {
       return "";
     }
-    return window.localStorage[_entityKey];
+    return window.localStorage[_entityKey]!;
   }
 
   void saveVersion(Version version) {
@@ -39,6 +39,6 @@ class CookieHelper {
       return Version.v0;
     }
 
-    return Version.values[int.parse(window.localStorage[_versionKey])];
+    return Version.values[int.parse(window.localStorage[_versionKey]!)];
   }
 }

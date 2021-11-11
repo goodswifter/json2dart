@@ -19,7 +19,7 @@ abstract class Template {
 }
 
 class DefaultTemplate extends Template {
-  String srcJson;
+  String? srcJson;
   String className;
 
   String tab = "  ";
@@ -28,7 +28,7 @@ class DefaultTemplate extends Template {
 
   @override
   String constructor() {
-    var fieldList = FieldHelper(srcJson).getFields();
+    var fieldList = FieldHelper(srcJson!).getFields();
     var filedString = StringBuffer();
     fieldList.forEach((f) {
       String name;
@@ -61,7 +61,7 @@ class DefaultTemplate extends Template {
   String field() {
 //    var useJsonKey
 
-    var fieldList = FieldHelper(srcJson).getFields();
+    var fieldList = FieldHelper(srcJson!).getFields();
     var sb = StringBuffer();
     fieldList.forEach((f) {
       sb.writeln();
@@ -103,30 +103,30 @@ class DefaultTemplate extends Template {
     return "  factory $className.fromJson(Map<String, dynamic> srcJson) => _\$${className}FromJson(srcJson);";
   }
 
-  List<Field> get fieldList => FieldHelper(srcJson).getFields();
+  List<Field> get fieldList => FieldHelper(srcJson!).getFields();
 
-  bool get isList => json.decode(srcJson) is List;
+  bool get isList => json.decode(srcJson!) is List;
 
   ListTemplate getListTemplate() {
     if (this is ListTemplate) {
-      return this;
+      return this as ListTemplate;
     }
     return ListTemplate(
-        srcJson: srcJson, className: className, delegateTemplate: this);
+        srcJson: srcJson!, className: className, delegateTemplate: this);
   }
 }
 
 class ListTemplate extends DefaultTemplate {
-  Template delegateTemplate;
+  Template? delegateTemplate;
 
   ListTemplate(
-      {String srcJson, String className = "Entity", this.delegateTemplate})
+      {String? srcJson, String className = "Entity", this.delegateTemplate})
       : super(className: className, srcJson: srcJson);
 
   @override
   String declare() {
-    return _declareListMethod() + "\n" + delegateTemplate?.declare() ??
-        super.declare();
+    return _declareListMethod() + "\n" + (delegateTemplate?.declare() ??
+        super.declare());
   }
 
   String _declareListMethod() {
@@ -163,11 +163,11 @@ class ListTemplate extends DefaultTemplate {
 
   @override
   List<Field> get fieldList =>
-      FieldHelper(json.encode(json.decode(srcJson)[0])).getFields();
+      FieldHelper(json.encode(json.decode(srcJson!)[0])).getFields();
 }
 
 class V1Template extends DefaultTemplate {
-  V1Template({String srcJson, String className = "Entity"})
+  V1Template({String? srcJson, String className = "Entity"})
       : super(className: className, srcJson: srcJson);
 
   @override

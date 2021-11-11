@@ -5,7 +5,7 @@ import 'package:json2dart_serialization/template.dart';
 
 class Generator {
   String jsonString;
-  String entityName;
+  String? entityName;
   Version version;
 
   Generator(this.jsonString, [this.entityName, this.version = Version.v0]) {
@@ -48,11 +48,11 @@ class Generator {
 
   void handleInputClassName() {
     final text = eClassName.value;
-    final lines = text.split("\n");
+    final lines = text?.split("\n");
 
     for (var i = 0; i < templateList.length; i++) {
       final template = templateList[i];
-      final line = lines[i].trim();
+      final line = lines![i].trim();
       final inputKeyValue = line.split(":");
       final inputName = inputKeyValue[1].trim();
 
@@ -87,7 +87,7 @@ class Generator {
     });
   }
 
-  String get fileName => camelCase2UnderScoreCase(entityName);
+  String get fileName => camelCase2UnderScoreCase(entityName!);
 
   static const String importString =
       "import 'package:json_annotation/json_annotation.dart';";
@@ -112,7 +112,7 @@ String camelCase2UnderScoreCase(String name) {
   return name[0].toLowerCase() +
       name.substring(1).replaceAllMapped(RegExp("[A-Z]"), (match) {
         var str = match.group(0);
-        return "_" + str.toLowerCase();
+        return "_" + str!.toLowerCase();
       });
 }
 
@@ -129,7 +129,7 @@ String convertJsonString(String jsonString) {
     var s = m.group(0);
 
     // 应该是double，但由于js的原因被识别成了整数数，这里对这种数据进行处理，将这里的最后一位从0替换为5，以便于让该被js识别成小数 而非数字
-    s = s.replaceRange(s.length - 1, s.length, "5");
+    s = s!.replaceRange(s.length - 1, s.length, "5");
     jsonString = jsonString.replaceRange(m.start, m.end, s);
   }
   return jsonString;

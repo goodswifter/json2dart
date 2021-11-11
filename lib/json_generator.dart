@@ -5,7 +5,7 @@ import 'dart:html';
 import 'package:json2dart_serialization/generator.dart';
 import 'package:json2dart_serialization/storage.dart';
 
-String entityName = null;
+String? entityName ;
 
 bool useJsonKey = true;
 
@@ -28,35 +28,35 @@ enum Version { v0, v1 }
 
 Version v = Version.v0;
 
-TextAreaElement eResult;
-TextAreaElement eClassName;
-Element editButton;
+late TextAreaElement eResult;
+late TextAreaElement eClassName;
+late Element editButton;
 void main() async {
   isChinese = await _isChinese();
   var dataHelper = CookieHelper();
-  TextAreaElement jsonInput = querySelector("#json");
-  eClassName = querySelector("#class_name");
-  eResult = querySelector("#result");
+  final jsonInput = querySelector("#json") as TextAreaElement;
+  eClassName = querySelector("#class_name") as TextAreaElement;
+  eResult = querySelector("#result") as TextAreaElement;
   jsonInput.value = dataHelper.loadJsonString();
 
   jsonInput.onInput.listen((event) {
-    dataHelper.saveJsonString(jsonInput.value);
+    dataHelper.saveJsonString(jsonInput.value??"");
     refreshData();
   });
 
-  InputElement entityNameEle = querySelector("#out_entity_name");
+  InputElement entityNameEle = querySelector("#out_entity_name") as InputElement;
   entityNameEle.value = dataHelper.loadEntityName();
-  entityName = entityNameEle.value;
+  entityName = entityNameEle.value??"";
   entityNameEle.onInput.listen((event) {
-    entityName = entityNameEle.value;
-    dataHelper.saveEntityName(entityName);
+    entityName = entityNameEle.value??"";
+    dataHelper.saveEntityName(entityName??"");
     refreshData();
   });
 
-  ButtonElement formatButton = querySelector("#format");
+  ButtonElement formatButton = querySelector("#format") as ButtonElement;
   formatButton.onClick.listen((click) {
     String pretty;
-    pretty = convertJsonString(jsonInput.value);
+    pretty = convertJsonString(jsonInput.value??"");
     try {
       pretty = formatJson(pretty);
     } on Exception {
@@ -65,15 +65,15 @@ void main() async {
     jsonInput.value = pretty;
   });
 
-  InputElement eJsonKey = querySelector("#use_json_key");
-  InputElement eCamelCase = querySelector("#camelCase");
-  InputElement eUseStatic = querySelector("#use_static");
-  TextAreaElement result = querySelector("#result");
-  RadioButtonInputElement v0 = querySelector("#v0");
-  RadioButtonInputElement v1 = querySelector("#v1");
+  InputElement eJsonKey = querySelector("#use_json_key") as InputElement;
+  InputElement eCamelCase = querySelector("#camelCase") as InputElement;
+  InputElement eUseStatic = querySelector("#use_static") as InputElement;
+  TextAreaElement result = querySelector("#result") as TextAreaElement;
+  RadioButtonInputElement v0 = querySelector("#v0") as RadioButtonInputElement;
+  RadioButtonInputElement v1 = querySelector("#v1") as RadioButtonInputElement;
 
   void updateVersioin() {
-    if (v1.checked) {
+    if (v1.checked == true) {
       v = Version.v1;
     } else {
       v = Version.v0;
@@ -104,9 +104,9 @@ void main() async {
   });
 
   void onJsonKeyChange() {
-    useJsonKey = eJsonKey.checked;
+    useJsonKey = eJsonKey.checked??false;
     eCamelCase.disabled = !useJsonKey;
-    isCamelCase = eCamelCase.checked;
+    isCamelCase = eCamelCase.checked??false;
     if (!useJsonKey) isCamelCase = false;
     refreshData();
   }
@@ -116,43 +116,43 @@ void main() async {
     onJsonKeyChange();
   });
 
-  querySelector("#check_label").onClick.listen((event) {
-    eJsonKey.checked = !eJsonKey.checked;
+  querySelector("#check_label")?.onClick.listen((event) {
+    eJsonKey.checked = !(eJsonKey.checked??false);
     onJsonKeyChange();
   });
 
   eCamelCase.checked = isCamelCase;
   eCamelCase.onInput.listen((event) {
-    isCamelCase = eCamelCase.checked;
+    isCamelCase = eCamelCase.checked??false;
     refreshData();
   });
 
-  querySelector("#camelCaseLabel").onClick.listen((event) {
-    eCamelCase.checked = !eCamelCase.checked;
+  querySelector("#camelCaseLabel")?.onClick.listen((event) {
+    eCamelCase.checked = !(eCamelCase.checked??false);
     refreshData();
   });
 
   eUseStatic.checked = isStaticMethod;
   eUseStatic.onInput.listen((event) {
-    isStaticMethod = eUseStatic.checked;
+    isStaticMethod = eUseStatic.checked??false;
     refreshData();
   });
 
-  querySelector("#useStaticLabel").onClick.listen((event) {
-    eUseStatic.checked = !eUseStatic.checked;
+  querySelector("#useStaticLabel")?.onClick.listen((event) {
+    eUseStatic.checked = !(eUseStatic.checked??false);
     refreshData();
   });
 
   refreshData();
 
-  querySelector("#copy").onClick.listen((event) {
+  querySelector("#copy")?.onClick.listen((event) {
     result.focus();
-    result.setSelectionRange(0, result.textLength);
+    result.setSelectionRange(0, result.textLength??0);
     document.execCommand("copy", null, "");
     result.blur();
   });
 
-  ButtonElement saveButton = querySelector("#save");
+  ButtonElement saveButton = querySelector("#save") as ButtonElement;
   saveButton.onClick.listen((event) async {
     Blob blob = Blob([result.value]);
     // FileSystem _filesystem =
@@ -162,20 +162,20 @@ void main() async {
     // fw.write(blob);
     // File file = await fileEntry.file();
     AnchorElement saveLink =
-        document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+        document.createElementNS("http://www.w3.org/1999/xhtml", "a") as AnchorElement;
     saveLink.href = Url.createObjectUrlFromBlob(blob);
     // saveLink.type = "download";
     saveLink.download = downloadFileName;
     saveLink.click();
   });
 
-  editButton = querySelector("#edit_class");
+  editButton = querySelector("#edit_class")!;
   editButton.onClick.listen((event) {
     showOrClassName();
   });
 
   eClassName.onInput.listen((event) {
-    refreshClassNameChange(eClassName.text);
+    refreshClassNameChange(eClassName.text??"");
   });
 }
 
@@ -183,7 +183,7 @@ Future<bool> _isChinese() async {
   // var lang = await findSystemLocale();
   List<MetaElement> elements = querySelectorAll("meta");
 
-  String lang;
+  String? lang;
   for (var e in elements) {
     var _lang = e.getAttribute("lang");
     if (_lang != null) {
@@ -199,14 +199,14 @@ Future<bool> _isChinese() async {
 }
 
 bool isChinese = false;
-Generator generator;
+late Generator generator;
 void refreshData() async {
-  TextAreaElement jsonInput = querySelector("#json");
+  TextAreaElement jsonInput = querySelector("#json") as TextAreaElement;
   var string = jsonInput.value;
-  TextAreaElement result = querySelector("#result");
+  TextAreaElement result = querySelector("#result") as TextAreaElement;
 
   try {
-    formatJson(string);
+    formatJson(string??"");
   } on Exception {
     if (isChinese) {
       result.value = "不是一个正确的json";
@@ -216,13 +216,13 @@ void refreshData() async {
     return;
   }
   String entityClassName;
-  if (entityName == null || entityName == "" || entityName.trim() == "") {
+  if (entityName == null || entityName == "" || entityName?.trim() == "") {
     entityClassName = "Entity";
   } else {
-    entityClassName = entityName;
+    entityClassName = entityName??"";
   }
 
-  generator = Generator(string, entityClassName, v);
+  generator = Generator(string??"", entityClassName, v);
   generator.refreshAllTemplates();
   writeClassNameText(generator);
   makeCode(generator);
@@ -250,7 +250,7 @@ void makeCode(Generator generator) {
 
 void writeToResult(String resultName, String resultText) {
   // print(filePrefix);
-  querySelector("#file_name").text = resultName;
+  querySelector("#file_name")?.text = resultName;
   eResult.value = resultText;
 }
 
