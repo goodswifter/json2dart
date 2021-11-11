@@ -3022,7 +3022,7 @@ gaB:function(a){return new W.ah(a,"click",!1,u.C)}}
 X.cp.prototype={
 aA:function(){var t,s=new P.M("")
 this.b9()
-s.a=""+("import 'package:json_annotation/json_annotation.dart'; \n      \npart '"+X.ec(this.b)+".g.dart';\n    \n    \n")
+s.a=""+("import 'package:json_annotation/json_annotation.dart'; \n      \npart '"+X.ec(this.b)+".g.dart';\n    \n")
 C.a.n(this.d,new X.cq(s))
 t=s.a
 return t.charCodeAt(0)==0?t:t},
@@ -3226,7 +3226,7 @@ X.x.prototype={
 M:function(){var t=new P.M("")
 C.a.n(new X.a8(this.a).J(),new X.cl(this,t))
 return"  "+this.b+"("+t.i(0)+");"},
-Y:function(){return"@JsonSerializable(explicitToJson: true)\n  class "+this.b+"{"},
+Y:function(){return"@JsonSerializable(explicitToJson: true)\nclass "+this.b+"{"},
 a_:function(){return"}"},
 P:function(){var t,s=new P.M("")
 C.a.n(new X.a8(this.a).J(),new X.cm(this,s))

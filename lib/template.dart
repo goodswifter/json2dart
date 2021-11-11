@@ -45,7 +45,7 @@ class DefaultTemplate extends Template {
   @override
   String declare() {
     return """@JsonSerializable(explicitToJson: true)
-  class $className{""";
+class $className{""";
   }
 
   String interface() {

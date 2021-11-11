@@ -97,7 +97,6 @@ class Generator {
   String get header => """$importString 
       
 part '$fileName.g.dart';
-    
     """;
 
   String getClassNameText() {
