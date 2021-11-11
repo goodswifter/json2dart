@@ -222,6 +222,11 @@ class V2Template extends DefaultTemplate{
     });
     return sb.toString();
   }
+
+  @override
+  String constructor() {
+    return "${tab}$className();";
+  }
 }
 
 class FieldHelper {
