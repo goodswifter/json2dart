@@ -44,8 +44,8 @@ class DefaultTemplate extends Template {
 
   @override
   String declare() {
-    return """@JsonSerializable()
-  class $className extends Object ${interface()}{""";
+    return """@JsonSerializable(explicitToJson: true)
+  class $className{""";
   }
 
   String interface() {
@@ -74,7 +74,7 @@ class DefaultTemplate extends Template {
       } else {
         nameString = f.nameString;
       }
-      sb.writeln("  ${f.typeString} $nameString;");
+        sb.writeln("  ${f.typeString} $nameString;");
     });
     return sb.toString();
   }
@@ -181,6 +181,46 @@ class V1Template extends DefaultTemplate {
     result.write(
         "  Map<String, dynamic> toJson() => _\$${className}ToJson(this);");
     return result.toString();
+  }
+}
+
+class V2Template extends DefaultTemplate{
+  V2Template({String? srcJson, String className = "Entity"})
+      : super(className: className, srcJson: srcJson);
+
+   @override
+  String interface() => "";
+
+  @override
+  String method() {
+    var result = StringBuffer();
+    result.writeln(super.method());
+    result.writeln();
+    result.write(
+        "  Map<String, dynamic> toJson() => _\$${className}ToJson(this);");
+    return result.toString();
+  }
+
+  @override
+  String field() {
+//    var useJsonKey
+
+    var fieldList = FieldHelper(srcJson!).getFields();
+    var sb = StringBuffer();
+    fieldList.forEach((f) {
+      sb.writeln();
+      if (main.useJsonKey) {
+        sb.writeln("  @JsonKey(name: '${f.nameString}')");
+      }
+      String nameString;
+      if (main.isCamelCase) {
+        nameString = firstLetterLower(camelCase(f.nameString));
+      } else {
+        nameString = f.nameString;
+      }
+        sb.writeln("  ${f.typeString}? $nameString;");
+    });
+    return sb.toString();
   }
 }
 

@@ -17,7 +17,9 @@ class Generator {
   void refreshAllTemplates() {
     var entityName = this.entityName ?? "Entity";
     DefaultTemplate template;
-    if (version == Version.v1) {
+    if(version == Version.v2){
+      template = V2Template(srcJson: jsonString, className: entityName);
+    }else if (version == Version.v1) {
       template = V1Template(srcJson: jsonString, className: entityName);
     } else {
       template = DefaultTemplate(srcJson: jsonString, className: entityName);
@@ -94,7 +96,7 @@ class Generator {
 
   String get header => """$importString 
       
-    part '$fileName.g.dart';
+part '$fileName.g.dart';
     
     """;
 

@@ -24,7 +24,7 @@ var downloadFileName = "";
 // }""";
 const defaultValue = "";
 
-enum Version { v0, v1 }
+enum Version { v0, v1 ,v2}
 
 Version v = Version.v0;
 
@@ -71,9 +71,13 @@ void main() async {
   TextAreaElement result = querySelector("#result") as TextAreaElement;
   RadioButtonInputElement v0 = querySelector("#v0") as RadioButtonInputElement;
   RadioButtonInputElement v1 = querySelector("#v1") as RadioButtonInputElement;
+  RadioButtonInputElement v2 = querySelector("#v2") as RadioButtonInputElement;
 
   void updateVersioin() {
-    if (v1.checked == true) {
+    if(v2.checked == true){
+      v = Version.v2;
+    }
+    else if (v1.checked == true) {
       v = Version.v1;
     } else {
       v = Version.v0;
@@ -83,10 +87,13 @@ void main() async {
   }
 
   void updateVersionUI() {
-    if (v == Version.v1) {
+    if(v == Version.v2){
+      v2.checked = true;
+    }
+    else if (v == Version.v1) {
       v1.checked = true;
     } else {
-      v1.checked = false;
+      v0.checked = true;
     }
   }
 
@@ -99,6 +106,10 @@ void main() async {
     refreshData();
   });
   v1.onInput.listen((event) {
+    updateVersioin();
+    refreshData();
+  });
+  v2.onInput.listen((event) {
     updateVersioin();
     refreshData();
   });
