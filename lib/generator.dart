@@ -72,15 +72,23 @@ class Generator {
           template = V1Template(
               srcJson: json.encode(filed.map), className: filed.typeString);
         }
+        if (version == Version.v2) {
+          template = V2Template(
+              srcJson: json.encode(filed.map), className: filed.typeString);
+        }
         templateList.add(template);
         refreshTemplate(template);
       } else if (filed is ListField) {
         if (filed.childIsObject) {
           DefaultTemplate template = DefaultTemplate(
-              srcJson: json.encode(filed.list[0]), className: filed.typeName);
+              srcJson: json.encode(filed.list![0]), className: filed.typeName);
           if (version == Version.v1) {
             template = V1Template(
-                srcJson: json.encode(filed.list[0]), className: filed.typeName);
+                srcJson: json.encode(filed.list![0]), className: filed.typeName);
+          }
+          if (version == Version.v2) {
+            template = V2Template(
+                srcJson: json.encode(filed.list![0]), className: filed.typeName);
           }
           templateList.add(template);
           refreshTemplate(template);

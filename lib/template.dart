@@ -285,7 +285,7 @@ class SimpleField extends Field {
 }
 
 class ListField extends Field {
-  List<dynamic> list;
+  List<dynamic>? list;
 
   @override
   String nameString;
@@ -293,10 +293,10 @@ class ListField extends Field {
   ListField(this.list, this.nameString);
 
   bool get childIsObject {
-    if (list == null || list.isEmpty) {
+    if (list == null || list!.isEmpty) {
       return false;
     }
-    if (list[0] is Map<String, dynamic>) {
+    if (list![0] is Map<String, dynamic>) {
       return true;
     }
     return false;
@@ -304,10 +304,10 @@ class ListField extends Field {
 
   String get typeName {
     String type = "dynamic";
-    if (list == null || list.isEmpty) {
+    if (list == null || list!.isEmpty) {
       return type;
     }
-    var item = list[0];
+    var item = list![0];
 
     if (item is List) {
       type = "${ListField(item, "").typeString}";
