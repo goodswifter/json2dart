@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 import 'package:json2dart_serialization/json_generator.dart' as main;
 
 abstract class Template {
@@ -30,15 +31,19 @@ class DefaultTemplate extends Template {
   String constructor() {
     var fieldList = FieldHelper(srcJson!).getFields();
     var filedString = StringBuffer();
-    fieldList.forEach((f) {
+    for (var i = 0; i < fieldList.length; i++) {
+      var f = fieldList[i];
       String name;
       if (main.isCamelCase) {
         name = camelCase(f.nameString);
       } else {
         name = f.nameString;
       }
-      filedString.write("this.$name,");
-    });
+      filedString.write("this.$name");
+      if (i != fieldList.length - 1) {
+        filedString.write(", ");
+      }
+    }
     return "${tab}$className($filedString);";
   }
 
@@ -74,7 +79,7 @@ class $className{""";
       } else {
         nameString = f.nameString;
       }
-        sb.writeln("  ${f.typeString} $nameString;");
+      sb.writeln("  ${f.typeString} $nameString;");
     });
     return sb.toString();
   }
@@ -111,27 +116,23 @@ class $className{""";
     if (this is ListTemplate) {
       return this as ListTemplate;
     }
-    return ListTemplate(
-        srcJson: srcJson!, className: className, delegateTemplate: this);
+    return ListTemplate(srcJson: srcJson!, className: className, delegateTemplate: this);
   }
 }
 
 class ListTemplate extends DefaultTemplate {
   Template? delegateTemplate;
 
-  ListTemplate(
-      {String? srcJson, String className = "Entity", this.delegateTemplate})
+  ListTemplate({String? srcJson, String className = "Entity", this.delegateTemplate})
       : super(className: className, srcJson: srcJson);
 
   @override
   String declare() {
-    return _declareListMethod() + "\n" + (delegateTemplate?.declare() ??
-        super.declare());
+    return _declareListMethod() + "\n" + (delegateTemplate?.declare() ?? super.declare());
   }
 
   String _declareListMethod() {
-    var listMethod =
-        """List<$className> get${className}List(List<dynamic> list){
+    var listMethod = """List<$className> get${className}List(List<dynamic> list){
     List<$className> result = [];
     list.forEach((item){
       result.add($className.fromJson(item));
@@ -162,13 +163,11 @@ class ListTemplate extends DefaultTemplate {
   }
 
   @override
-  List<Field> get fieldList =>
-      FieldHelper(json.encode(json.decode(srcJson!)[0])).getFields();
+  List<Field> get fieldList => FieldHelper(json.encode(json.decode(srcJson!)[0])).getFields();
 }
 
 class V1Template extends DefaultTemplate {
-  V1Template({String? srcJson, String className = "Entity"})
-      : super(className: className, srcJson: srcJson);
+  V1Template({String? srcJson, String className = "Entity"}) : super(className: className, srcJson: srcJson);
 
   @override
   String interface() => "";
@@ -178,17 +177,15 @@ class V1Template extends DefaultTemplate {
     var result = StringBuffer();
     result.writeln(super.method());
     result.writeln();
-    result.write(
-        "  Map<String, dynamic> toJson() => _\$${className}ToJson(this);");
+    result.write("  Map<String, dynamic> toJson() => _\$${className}ToJson(this);");
     return result.toString();
   }
 }
 
-class V2Template extends DefaultTemplate{
-  V2Template({String? srcJson, String className = "Entity"})
-      : super(className: className, srcJson: srcJson);
+class V2Template extends DefaultTemplate {
+  V2Template({String? srcJson, String className = "Entity"}) : super(className: className, srcJson: srcJson);
 
-   @override
+  @override
   String interface() => "";
 
   @override
@@ -196,8 +193,7 @@ class V2Template extends DefaultTemplate{
     var result = StringBuffer();
     result.writeln(super.method());
     result.writeln();
-    result.write(
-        "  Map<String, dynamic> toJson() => _\$${className}ToJson(this);");
+    result.write("  Map<String, dynamic> toJson() => _\$${className}ToJson(this);");
     return result.toString();
   }
 
@@ -218,7 +214,7 @@ class V2Template extends DefaultTemplate{
       } else {
         nameString = f.nameString;
       }
-        sb.writeln("  ${f.typeString}? $nameString;");
+      sb.writeln("  ${f.typeString}? $nameString;");
     });
     return sb.toString();
   }
@@ -358,14 +354,14 @@ ${template.end()}
 }
 
 String firstLetterUpper(String value) {
-  if (value == null || value.isEmpty) {
+  if (value.isEmpty) {
     return "";
   }
   return value[0].toUpperCase() + value.substring(1);
 }
 
 String firstLetterLower(String value) {
-  if (value == null || value.isEmpty) {
+  if (value.isEmpty) {
     return "";
   }
   return value[0].toLowerCase() + value.substring(1);
