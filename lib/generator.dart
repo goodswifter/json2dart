@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:json2dart_serialization/json_generator.dart';
-import 'package:json2dart_serialization/template.dart';
+import 'package:json2dart/json_generator.dart';
+import 'package:json2dart/template.dart';
 
 class Generator {
   String jsonString;
@@ -9,7 +9,7 @@ class Generator {
   Version version;
 
   Generator(this.jsonString, [this.entityName, this.version = Version.v0]) {
-    this.jsonString = convertJsonString(jsonString);
+    jsonString = convertJsonString(jsonString);
   }
 
   List<DefaultTemplate> templateList = [];
@@ -17,9 +17,9 @@ class Generator {
   void refreshAllTemplates() {
     var entityName = this.entityName ?? "Entity";
     DefaultTemplate template;
-    if(version == Version.v2){
+    if (version == Version.v2) {
       template = V2Template(srcJson: jsonString, className: entityName);
-    }else if (version == Version.v1) {
+    } else if (version == Version.v1) {
       template = V1Template(srcJson: jsonString, className: entityName);
     } else {
       template = DefaultTemplate(srcJson: jsonString, className: entityName);
@@ -42,9 +42,9 @@ class Generator {
     handleInputClassName();
 
     resultSb.writeln(header);
-    templateList.forEach((template) {
+    for (var template in templateList) {
       resultSb.writeln(template.toString());
-    });
+    }
     return resultSb.toString();
   }
 
@@ -64,43 +64,36 @@ class Generator {
 
   void refreshTemplate(DefaultTemplate template) {
     var fieldList = template.fieldList;
-    fieldList.forEach((filed) {
+    for (var filed in fieldList) {
       if (filed is MapField) {
-        DefaultTemplate template = DefaultTemplate(
-            srcJson: json.encode(filed.map), className: filed.typeString);
+        DefaultTemplate template = DefaultTemplate(srcJson: json.encode(filed.map), className: filed.typeString);
         if (version == Version.v1) {
-          template = V1Template(
-              srcJson: json.encode(filed.map), className: filed.typeString);
+          template = V1Template(srcJson: json.encode(filed.map), className: filed.typeString);
         }
         if (version == Version.v2) {
-          template = V2Template(
-              srcJson: json.encode(filed.map), className: filed.typeString);
+          template = V2Template(srcJson: json.encode(filed.map), className: filed.typeString);
         }
         templateList.add(template);
         refreshTemplate(template);
       } else if (filed is ListField) {
         if (filed.childIsObject) {
-          DefaultTemplate template = DefaultTemplate(
-              srcJson: json.encode(filed.list![0]), className: filed.typeName);
+          DefaultTemplate template = DefaultTemplate(srcJson: json.encode(filed.list![0]), className: filed.typeName);
           if (version == Version.v1) {
-            template = V1Template(
-                srcJson: json.encode(filed.list![0]), className: filed.typeName);
+            template = V1Template(srcJson: json.encode(filed.list![0]), className: filed.typeName);
           }
           if (version == Version.v2) {
-            template = V2Template(
-                srcJson: json.encode(filed.list![0]), className: filed.typeName);
+            template = V2Template(srcJson: json.encode(filed.list![0]), className: filed.typeName);
           }
           templateList.add(template);
           refreshTemplate(template);
         }
       }
-    });
+    }
   }
 
   String get fileName => camelCase2UnderScoreCase(entityName!);
 
-  static const String importString =
-      "import 'package:json_annotation/json_annotation.dart';";
+  static const String importString = "import 'package:json_annotation/json_annotation.dart';";
 
   String get header => """$importString 
       

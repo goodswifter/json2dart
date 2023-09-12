@@ -2,15 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
-import 'package:json2dart_serialization/generator.dart';
-import 'package:json2dart_serialization/storage.dart';
+import 'package:json2dart/generator.dart';
+import 'package:json2dart/storage.dart';
 
 String? entityName;
 
-bool useJsonKey = true;
+bool useJsonKey = false;
 
 bool isCamelCase = true;
-bool isStaticMethod = true;
+bool isStaticMethod = false;
 
 var downloadFileName = "";
 
@@ -26,7 +26,7 @@ const defaultValue = "";
 
 enum Version { v0, v1, v2 }
 
-Version v = Version.v0;
+Version v = Version.v2;
 
 late TextAreaElement eResult;
 late TextAreaElement eClassName;
@@ -187,7 +187,7 @@ void main() async {
   });
 }
 
-bool _isChinese() {
+Future<bool> _isChinese() async {
   // var lang = await findSystemLocale();
   List<MetaElement> elements = querySelectorAll("meta");
 
@@ -257,14 +257,13 @@ void makeCode(Generator generator) {
 }
 
 void writeToResult(String resultName, String resultText) {
-  // print(filePrefix);
   querySelector("#file_name")?.text = resultName;
   eResult.value = resultText;
 }
 
 String formatJson(String jsonString) {
   var map = json.decode(jsonString);
-  var prettyString = JsonEncoder.withIndent("  ").convert(map);
+  var prettyString = const JsonEncoder.withIndent("  ").convert(map);
   return prettyString;
 }
 

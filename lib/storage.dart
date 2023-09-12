@@ -1,6 +1,6 @@
 import 'dart:html';
 
-import 'package:json2dart_serialization/json_generator.dart';
+import 'package:json2dart/json_generator.dart';
 
 const _entityKey = "entityKey";
 const _versionKey = "versionKey";
