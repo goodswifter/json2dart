@@ -5,7 +5,7 @@ import 'dart:html';
 import 'package:json2dart_serialization/generator.dart';
 import 'package:json2dart_serialization/storage.dart';
 
-String? entityName ;
+String? entityName;
 
 bool useJsonKey = true;
 
@@ -24,7 +24,7 @@ var downloadFileName = "";
 // }""";
 const defaultValue = "";
 
-enum Version { v0, v1 ,v2}
+enum Version { v0, v1, v2 }
 
 Version v = Version.v0;
 
@@ -40,23 +40,23 @@ void main() async {
   jsonInput.value = dataHelper.loadJsonString();
 
   jsonInput.onInput.listen((event) {
-    dataHelper.saveJsonString(jsonInput.value??"");
+    dataHelper.saveJsonString(jsonInput.value ?? "");
     refreshData();
   });
 
   InputElement entityNameEle = querySelector("#out_entity_name") as InputElement;
   entityNameEle.value = dataHelper.loadEntityName();
-  entityName = entityNameEle.value??"";
+  entityName = entityNameEle.value ?? "";
   entityNameEle.onInput.listen((event) {
-    entityName = entityNameEle.value??"";
-    dataHelper.saveEntityName(entityName??"");
+    entityName = entityNameEle.value ?? "";
+    dataHelper.saveEntityName(entityName ?? "");
     refreshData();
   });
 
   ButtonElement formatButton = querySelector("#format") as ButtonElement;
   formatButton.onClick.listen((click) {
     String pretty;
-    pretty = convertJsonString(jsonInput.value??"");
+    pretty = convertJsonString(jsonInput.value ?? "");
     try {
       pretty = formatJson(pretty);
     } on Exception {
@@ -74,10 +74,9 @@ void main() async {
   RadioButtonInputElement v2 = querySelector("#v2") as RadioButtonInputElement;
 
   void updateVersioin() {
-    if(v2.checked == true){
+    if (v2.checked == true) {
       v = Version.v2;
-    }
-    else if (v1.checked == true) {
+    } else if (v1.checked == true) {
       v = Version.v1;
     } else {
       v = Version.v0;
@@ -87,10 +86,9 @@ void main() async {
   }
 
   void updateVersionUI() {
-    if(v == Version.v2){
+    if (v == Version.v2) {
       v2.checked = true;
-    }
-    else if (v == Version.v1) {
+    } else if (v == Version.v1) {
       v1.checked = true;
     } else {
       v0.checked = true;
@@ -115,9 +113,9 @@ void main() async {
   });
 
   void onJsonKeyChange() {
-    useJsonKey = eJsonKey.checked??false;
+    useJsonKey = eJsonKey.checked ?? false;
     eCamelCase.disabled = !useJsonKey;
-    isCamelCase = eCamelCase.checked??false;
+    isCamelCase = eCamelCase.checked ?? false;
     if (!useJsonKey) isCamelCase = false;
     refreshData();
   }
@@ -128,29 +126,29 @@ void main() async {
   });
 
   querySelector("#check_label")?.onClick.listen((event) {
-    eJsonKey.checked = !(eJsonKey.checked??false);
+    eJsonKey.checked = !(eJsonKey.checked ?? false);
     onJsonKeyChange();
   });
 
   eCamelCase.checked = isCamelCase;
   eCamelCase.onInput.listen((event) {
-    isCamelCase = eCamelCase.checked??false;
+    isCamelCase = eCamelCase.checked ?? false;
     refreshData();
   });
 
   querySelector("#camelCaseLabel")?.onClick.listen((event) {
-    eCamelCase.checked = !(eCamelCase.checked??false);
+    eCamelCase.checked = !(eCamelCase.checked ?? false);
     refreshData();
   });
 
   eUseStatic.checked = isStaticMethod;
   eUseStatic.onInput.listen((event) {
-    isStaticMethod = eUseStatic.checked??false;
+    isStaticMethod = eUseStatic.checked ?? false;
     refreshData();
   });
 
   querySelector("#useStaticLabel")?.onClick.listen((event) {
-    eUseStatic.checked = !(eUseStatic.checked??false);
+    eUseStatic.checked = !(eUseStatic.checked ?? false);
     refreshData();
   });
 
@@ -158,7 +156,7 @@ void main() async {
 
   querySelector("#copy")?.onClick.listen((event) {
     result.focus();
-    result.setSelectionRange(0, result.textLength??0);
+    result.setSelectionRange(0, result.textLength ?? 0);
     document.execCommand("copy", null, "");
     result.blur();
   });
@@ -172,8 +170,7 @@ void main() async {
     // FileWriter fw = await fileEntry.createWriter();
     // fw.write(blob);
     // File file = await fileEntry.file();
-    AnchorElement saveLink =
-        document.createElementNS("http://www.w3.org/1999/xhtml", "a") as AnchorElement;
+    AnchorElement saveLink = document.createElementNS("http://www.w3.org/1999/xhtml", "a") as AnchorElement;
     saveLink.href = Url.createObjectUrlFromBlob(blob);
     // saveLink.type = "download";
     saveLink.download = downloadFileName;
@@ -186,11 +183,11 @@ void main() async {
   });
 
   eClassName.onInput.listen((event) {
-    refreshClassNameChange(eClassName.text??"");
+    refreshClassNameChange(eClassName.text ?? "");
   });
 }
 
-Future<bool> _isChinese() async {
+bool _isChinese() {
   // var lang = await findSystemLocale();
   List<MetaElement> elements = querySelectorAll("meta");
 
@@ -217,7 +214,7 @@ void refreshData() async {
   TextAreaElement result = querySelector("#result") as TextAreaElement;
 
   try {
-    formatJson(string??"");
+    formatJson(string ?? "");
   } on Exception {
     if (isChinese) {
       result.value = "不是一个正确的json";
@@ -230,10 +227,10 @@ void refreshData() async {
   if (entityName == null || entityName == "" || entityName?.trim() == "") {
     entityClassName = "Entity";
   } else {
-    entityClassName = entityName??"";
+    entityClassName = entityName ?? "";
   }
 
-  generator = Generator(string??"", entityClassName, v);
+  generator = Generator(string ?? "", entityClassName, v);
   generator.refreshAllTemplates();
   writeClassNameText(generator);
   makeCode(generator);
