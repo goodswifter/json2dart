@@ -72,6 +72,7 @@ void main() async {
   RadioButtonInputElement v0 = querySelector("#v0") as RadioButtonInputElement;
   RadioButtonInputElement v1 = querySelector("#v1") as RadioButtonInputElement;
   RadioButtonInputElement v2 = querySelector("#v2") as RadioButtonInputElement;
+  v2.checked = true;
 
   void updateVersioin() {
     if (v2.checked == true) {
@@ -86,12 +87,12 @@ void main() async {
   }
 
   void updateVersionUI() {
-    if (v == Version.v2) {
-      v2.checked = true;
+    if (v == Version.v0) {
+      v0.checked = true;
     } else if (v == Version.v1) {
       v1.checked = true;
     } else {
-      v0.checked = true;
+      v2.checked = true;
     }
   }
 

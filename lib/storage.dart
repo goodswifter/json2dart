@@ -36,7 +36,7 @@ class CookieHelper {
 
   Version loadVersion() {
     if (!window.localStorage.containsKey(_versionKey)) {
-      return Version.v0;
+      return Version.v2;
     }
 
     return Version.values[int.parse(window.localStorage[_versionKey]!)];
